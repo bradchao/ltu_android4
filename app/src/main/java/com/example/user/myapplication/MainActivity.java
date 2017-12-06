@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -34,13 +36,18 @@ public class MainActivity extends AppCompatActivity {
             // 1. URL : protocol:// Hostname or ip /.resources...
             URL url = new URL("http://www.ltu.edu.tw/");
             HttpURLConnection conn =  (HttpURLConnection)url.openConnection();
-            conn.connect();;
+            conn.connect();
+
             InputStream in =  conn.getInputStream();
-            int b;
-            while ((b = in.read()) != -1){
-                Log.v("brad", "" + (char)b);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+            String line = null;
+            while ((line = br.readLine()) != null){
+                Log.v("brad", line);
             }
             in.close();
+
+
             Log.v("brad", "OK");
 
         }catch (Exception ee){
