@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getImage(){
         try {
-            URL url = new URL("http://www.ltu.edu.tw/ezfiles/0/1000/img/44/110042000.jpg");
+            URL url = new URL("https://ezgo.coa.gov.tw/Uploads/opendata/BuyItem/APPLY_D/20151026161106.jpg");
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             conn.connect();
 
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     private void getOpenData(){
         try {
             // 1. URL : protocol:// Hostname or ip /.resources...
-            URL url = new URL("http://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelFood.aspx");
+            URL url = new URL("http://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvAgriculturalProduce.aspx");
             HttpURLConnection conn =  (HttpURLConnection)url.openConnection();
             conn.connect();
 
@@ -158,9 +158,8 @@ public class MainActivity extends AppCompatActivity {
             for (int i=0; i<root.length(); i++){
                 JSONObject rec = root.getJSONObject(i);
                 String name = rec.getString("Name");
-                String address = rec.getString("Address");
-                String tel = rec.getString("Tel");
-                String words = rec.getString("HostWords");
+                String address = rec.getString("SalePlace");
+                String tel = rec.getString("ContactTel");
                 Log.v("brad", name + ":" + address + ":" + tel);
 
             }
@@ -171,6 +170,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public void test4(View view){
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    // 1. URL : protocol:// Hostname or ip /.resources...
+                    //URL url = new URL("http://120.108.137.125/brad2.php?x=100&y=33");
+                    URL url = new URL("http://10.0.2.2/brad2.php?x=100&y=33");  // 10.0.2.2 => 127.0.0.1 alias => VM
+                    HttpURLConnection conn =  (HttpURLConnection)url.openConnection();
+                    conn.connect();
+
+                    InputStream in =  conn.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+                    String line = null; sb = new StringBuffer();
+                    while ((line = br.readLine()) != null){
+                        Log.v("brad", line);
+                        sb.append(line + "\n");
+                    }
+                    in.close();
+                    //parseJSON(sb.toString());
+                    Log.v("brad", "OK");
+
+                }catch (Exception ee){
+                    Log.v("brad", ee.toString());
+                }
+            }
+        }.start();
+    }
 
 
 }
