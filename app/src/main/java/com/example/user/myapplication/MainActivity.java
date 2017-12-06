@@ -11,6 +11,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -134,19 +138,39 @@ public class MainActivity extends AppCompatActivity {
 
             String line = null; sb = new StringBuffer();
             while ((line = br.readLine()) != null){
-                Log.v("brad", line);
+                //Log.v("brad", line);
                 sb.append(line + "\n");
             }
             in.close();
-
-            //handler.sendEmptyMessage(0);
-
+            parseJSON(sb.toString());
             Log.v("brad", "OK");
 
         }catch (Exception ee){
             Log.v("brad", ee.toString());
         }
     }
+
+    private void parseJSON(String json){
+        try {
+            JSONArray root = new JSONArray(json);
+            Log.v("brad", "count:" + root.length());
+
+            for (int i=0; i<root.length(); i++){
+                JSONObject rec = root.getJSONObject(i);
+                String name = rec.getString("Name");
+                String address = rec.getString("Address");
+                String tel = rec.getString("Tel");
+                String words = rec.getString("HostWords");
+                Log.v("brad", name + ":" + address + ":" + tel);
+
+            }
+
+
+        } catch (JSONException e) {
+            Log.v("brad", e.toString());
+        }
+    }
+
 
 
 }
