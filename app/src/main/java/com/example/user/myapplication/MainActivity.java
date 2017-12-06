@@ -114,7 +114,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test3(View view){
-
+        new Thread(){
+            @Override
+            public void run() {
+                getOpenData();
+            }
+        }.start();
     }
+
+    private void getOpenData(){
+        try {
+            // 1. URL : protocol:// Hostname or ip /.resources...
+            URL url = new URL("http://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelFood.aspx");
+            HttpURLConnection conn =  (HttpURLConnection)url.openConnection();
+            conn.connect();
+
+            InputStream in =  conn.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+            String line = null; sb = new StringBuffer();
+            while ((line = br.readLine()) != null){
+                Log.v("brad", line);
+                sb.append(line + "\n");
+            }
+            in.close();
+
+            //handler.sendEmptyMessage(0);
+
+            Log.v("brad", "OK");
+
+        }catch (Exception ee){
+            Log.v("brad", ee.toString());
+        }
+    }
+
 
 }
