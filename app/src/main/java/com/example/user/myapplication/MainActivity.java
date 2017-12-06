@@ -1,9 +1,12 @@
 package com.example.user.myapplication;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -13,11 +16,18 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class MainActivity extends AppCompatActivity {
+    private TextView tv;
+    private StringBuffer sb;
+    private UIHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        handler = new UIHandler();
+        tv = (TextView)findViewById(R.id.tv);
+
     }
 
     public void test1(View view){
@@ -41,12 +51,13 @@ public class MainActivity extends AppCompatActivity {
             InputStream in =  conn.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-            String line = null;
+            String line = null; sb = new StringBuffer();
             while ((line = br.readLine()) != null){
-                Log.v("brad", line);
+                sb.append(line + "\n");
             }
             in.close();
 
+            handler.sendEmptyMessage(0);
 
             Log.v("brad", "OK");
 
@@ -54,6 +65,15 @@ public class MainActivity extends AppCompatActivity {
             Log.v("brad", ee.toString());
         }
     }
+
+    private class UIHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            tv.setText(sb);
+        }
+    }
+
 
     public void test2(View view){
 
