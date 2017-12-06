@@ -1,11 +1,14 @@
 package com.example.user.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -17,8 +20,10 @@ import java.net.URLConnection;
 
 public class MainActivity extends AppCompatActivity {
     private TextView tv;
+    private ImageView img;
     private StringBuffer sb;
     private UIHandler handler;
+    private  Bitmap bmp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         handler = new UIHandler();
         tv = (TextView)findViewById(R.id.tv);
+        img = (ImageView)findViewById(R.id.img);
 
     }
 
@@ -70,14 +76,43 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            tv.setText(sb);
+
+            switch (msg.what){
+                case 0:
+                    tv.setText(sb);
+                    break;
+                case 1:
+                    img.setImageBitmap(bmp);
+                    break;
+            }
         }
     }
 
-
     public void test2(View view){
+        new Thread(){
+            @Override
+            public void run() {
+                getImage();
+            }
+        }.start();
+    }
+
+    private void getImage(){
+        try {
+            URL url = new URL("http://www.ltu.edu.tw/ezfiles/0/1000/img/44/110042000.jpg");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.connect();
+
+            bmp = BitmapFactory.decodeStream(conn.getInputStream());
+            handler.sendEmptyMessage(1);
+
+            Log.v("brad", "OK2");
+        }catch (Exception e){
+            Log.v("brad", e.toString());
+        }
 
     }
+
     public void test3(View view){
 
     }
